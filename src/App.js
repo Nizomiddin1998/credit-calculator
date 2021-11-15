@@ -112,7 +112,7 @@ function App() {
     }
 
     function Calculate() {
-        if (carValue){
+        if (carValue && creditTerm && carYear && city){
             let yilFoiz;
             if (parseInt(carYear) <= 2018) {
                 yilFoiz = 0.11
@@ -152,7 +152,7 @@ function App() {
             let risk2 = m * 0.01 / 12 * parseInt(creditTerm);
             let straxofka = sugMukof + risk + risk2;
             let jamiTulov = parseInt(carValue) * boshFoiz / 100 + straxofka + carValue * 0.07;
-            let KapitalJami = (avtoBaho + notarial + royxatdanUt + gai + 330000) + jamiTulov;
+            let KapitalJami = +((avtoBaho + notarial + royxatdanUt + gai + 330000) + jamiTulov).toFixed(3);
 
             let sugMukofotAnor = +(carValue * 0.8 * 0.007 / 12 * parseInt(creditTerm)).toFixed(2);
             let riskAnor = carValue * 0.09 * 1.14 * 0.007 / 12 * parseInt(creditTerm);
@@ -176,7 +176,7 @@ function App() {
                 let TuronJami = (sugurtaT + boshSumma + rasxod);
 
                 let jamitulovAnor = (carValue * boshFoiz / 100 + strahofka)
-                let AnorJami = 330000 + notarial + royxatdanUt + gai + jamitulovAnor;
+                let AnorJami = +(330000 + notarial + royxatdanUt + gai + jamitulovAnor).toFixed(3);
 
                 setObshiRasxod({
                     anor: AnorJami, kapital: KapitalJami, ipoteka: IpotekaJami, turon: TuronJami
