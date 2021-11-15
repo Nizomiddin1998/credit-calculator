@@ -9,6 +9,8 @@ import TuronBank from './img/turonbank.jpg'
 import Table from "./components/Table";
 import Cost from "./components/Cost";
 import Selected from "./components/Selected";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
@@ -29,7 +31,7 @@ function App() {
     const [carYear, setCarYear] = useState('')
     const [city, setCity] = useState('')
     const [minusDisabled, setMinusDisabled] = useState(true)
-    const [GAI, setGAI] = useState('')
+    const [GAI, setGAI] = useState('');
 
     let BoshlangichTolov;
 
@@ -110,165 +112,172 @@ function App() {
     }
 
     function Calculate() {
+        if (carValue){
+            let yilFoiz;
+            if (parseInt(carYear) <= 2018) {
+                yilFoiz = 0.11
+            } else yilFoiz = 0.09;
+            let oneAmount;
 
-        let yilFoiz;
-        if (parseInt(carYear)<=2018){
-            yilFoiz = 0.11
-        } else yilFoiz = 0.09;
-        let oneAmount;
-
-        let oyFoiz;
-        let one1Amount
-        let one2Amount
-        let one3Amount
-        let one4Amount
-        if (bankLogo === 'AnorBank')
-            oyFoiz = 0.3 / 12;
-        else if (bankLogo === 'KapitalBank')
-            oyFoiz = 0.23 / 12
-        else if (bankLogo === 'IpotekaBank')
-            oyFoiz = 0.23 / 12
-        else if (bankLogo === 'TuronBank')
-            oyFoiz = 0.24 / 12
+            let oyFoiz;
+            let one1Amount
+            let one2Amount
+            let one3Amount
+            let one4Amount
+            if (bankLogo === 'AnorBank')
+                oyFoiz = 0.3 / 12;
+            else if (bankLogo === 'KapitalBank')
+                oyFoiz = 0.23 / 12
+            else if (bankLogo === 'IpotekaBank')
+                oyFoiz = 0.23 / 12
+            else if (bankLogo === 'TuronBank')
+                oyFoiz = 0.24 / 12
 
 
+            let aniqCredit = parseInt(carValue) - boshSumma;
+            let topPart = (aniqCredit * oyFoiz)
+            let bottomPart = (1 - (1 / Math.pow((1 + oyFoiz), parseInt(creditTerm))))
+            oneAmount = (topPart / bottomPart)
 
-        let aniqCredit = parseInt(carValue) - boshSumma;
-        let topPart = (aniqCredit * oyFoiz)
-        let bottomPart = (1 - (1 / Math.pow((1 + oyFoiz), parseInt(creditTerm))))
-        oneAmount = (topPart / bottomPart)
+            let allAmount = +(oneAmount * creditTerm).toFixed(3);
 
-        let allAmount = +(oneAmount * creditTerm).toFixed(3);
+            let avtoBaho = 270000;
+            let notarial = 550000;
+            let royxatdanUt = 570000;
+            let gai = avtoBaho * yilFoiz * parseInt(otKuchi) + 800000;
+            setGAI(gai)
+            let sugMukof = +(carValue * 0.7 * 0.01 / 12 * parseInt(creditTerm));
+            let risk = carValue * 0.3 * 0.01 / 12 * 15;
+            let m = +(carValue * 0.07 * 1.25).toFixed(2);
+            let risk2 = m * 0.01 / 12 * parseInt(creditTerm);
+            let straxofka = sugMukof + risk + risk2;
+            let jamiTulov = parseInt(carValue) * boshFoiz / 100 + straxofka + carValue * 0.07;
+            let KapitalJami = (avtoBaho + notarial + royxatdanUt + gai + 330000) + jamiTulov;
 
-        let avtoBaho = 270000;
-        let notarial= 550000;
-        let royxatdanUt= 570000;
-        let gai = avtoBaho * yilFoiz * parseInt(otKuchi) + 800000;
-        setGAI(gai)
-        let sugMukof= +(carValue*0.7*0.01/12*parseInt(creditTerm));
-        let risk = carValue*0.3 * 0.01 /12 *15;
-        let m = +(carValue * 0.07 * 1.25).toFixed(2);
-        let risk2 = m * 0.01 / 12 * parseInt(creditTerm);
-        let straxofka = sugMukof + risk + risk2;
-        let jamiTulov = parseInt(carValue) * boshFoiz / 100 + straxofka + carValue * 0.07;
-        let KapitalJami = (avtoBaho+notarial+royxatdanUt+gai+330000) + jamiTulov;
+            let sugMukofotAnor = +(carValue * 0.8 * 0.007 / 12 * parseInt(creditTerm)).toFixed(2);
+            let riskAnor = carValue * 0.09 * 1.14 * 0.007 / 12 * parseInt(creditTerm);
+            let strahofka = +(sugMukofotAnor + riskAnor).toFixed(2)
 
-        let sugMukofotAnor= +(carValue * 0.8 * 0.007 / 12 * parseInt(creditTerm)).toFixed(2);
-        let riskAnor= carValue * 0.09 * 1.14 *0.007 / 12* parseInt(creditTerm);
-        let strahofka = +(sugMukofotAnor + riskAnor).toFixed(2)
+            if (boshFoiz >= 30) {
+                one1Amount = +(aniqCredit * 0.3 / 12 / (1 - (1 / Math.pow((1 + 0.3 / 12), parseInt(creditTerm))))).toFixed(3)
+                one2Amount = +(aniqCredit * 0.23 / 12 / (1 - (1 / Math.pow((1 + 0.23 / 12), parseInt(creditTerm))))).toFixed(3)
+                one3Amount = +(aniqCredit * 0.23 / 12 / (1 - (1 / Math.pow((1 + 0.23 / 12), parseInt(creditTerm))))).toFixed(3)
+                one4Amount = +(aniqCredit * 0.24 / 12 / (1 - (1 / Math.pow((1 + 0.24 / 12), parseInt(creditTerm))))).toFixed(3)
+                setTableB({
+                    boshFoizA: boshFoiz, boshFoizK: boshFoiz, boshFoizI: boshFoiz, boshFoizT: boshFoiz
+                })
+                setTableS({
+                    boshSummaA: boshSumma, boshSummaK: boshSumma, boshSummaI: boshSumma, boshSummaT: boshSumma
+                })
+                let sugurtaI = parseInt(carValue) * 0.008 * (parseInt(creditTerm) / 12)
+                let sugurtaT = (parseInt(carValue) - boshSumma) * 1.25 * 0.01 * (parseInt(creditTerm) / 12)
+                let rasxod = avtoBaho + notarial + royxatdanUt + gai
+                let IpotekaJami = (sugurtaI + boshSumma + rasxod)
+                let TuronJami = (sugurtaT + boshSumma + rasxod);
 
-        if (boshFoiz >= 30){
-            one1Amount = +(aniqCredit * 0.3 / 12 / (1 - (1 / Math.pow((1 + 0.3 / 12), parseInt(creditTerm))))).toFixed(3)
-            one2Amount = +(aniqCredit * 0.23 / 12 / (1 - (1 / Math.pow((1 + 0.23 / 12), parseInt(creditTerm))))).toFixed(3)
-            one3Amount = +(aniqCredit * 0.23 / 12 / (1 - (1 / Math.pow((1 + 0.23 / 12), parseInt(creditTerm))))).toFixed(3)
-            one4Amount = +(aniqCredit * 0.24 / 12 / (1 - (1 / Math.pow((1 + 0.24 / 12), parseInt(creditTerm))))).toFixed(3)
-            setTableB({
-                boshFoizA: boshFoiz, boshFoizK: boshFoiz, boshFoizI: boshFoiz, boshFoizT: boshFoiz
+                let jamitulovAnor = (carValue * boshFoiz / 100 + strahofka)
+                let AnorJami = 330000 + notarial + royxatdanUt + gai + jamitulovAnor;
+
+                setObshiRasxod({
+                    anor: AnorJami, kapital: KapitalJami, ipoteka: IpotekaJami, turon: TuronJami
+                })
+
+            } else if (boshFoiz >= 25 && boshFoiz < 30) {
+
+                one1Amount = +((parseInt(carValue) - carValue * 0.3) * 0.3 / 12 / (1 - (1 / Math.pow((1 + 0.3 / 12), parseInt(creditTerm))))).toFixed(3)
+                one2Amount = +(aniqCredit * 0.23 / 12 / (1 - (1 / Math.pow((1 + 0.23 / 12), parseInt(creditTerm))))).toFixed(3)
+                one3Amount = +((parseInt(carValue) - carValue * 0.3) * 0.23 / 12 / (1 - (1 / Math.pow((1 + 0.23 / 12), parseInt(creditTerm))))).toFixed(3)
+                one4Amount = +(aniqCredit * 0.24 / 12 / (1 - (1 / Math.pow((1 + 0.24 / 12), parseInt(creditTerm))))).toFixed(3)
+                setTableB({
+                    boshFoizA: 30, boshFoizK: boshFoiz, boshFoizI: 30, boshFoizT: boshFoiz
+                })
+                setTableS({
+                    boshSummaA: carValue * 0.3, boshSummaK: boshSumma, boshSummaI: carValue * 0.3, boshSummaT: boshSumma
+                })
+
+                let sugurtaI = parseInt(carValue) * 0.008 * (parseInt(creditTerm) / 12)
+                let sugurtaT = (parseInt(carValue) - carValue * 0.3) * 1.25 * 0.01 * (parseInt(creditTerm) / 12)
+                let rasxod = avtoBaho + notarial + royxatdanUt + gai;
+                let IpotekaJami = (sugurtaI + carValue * 0.3 + rasxod);
+                let TuronJami = (sugurtaT + boshSumma + rasxod)
+
+
+                let jamitulovAnor = (carValue * 30 / 100 + strahofka)
+                let AnorJami = 330000 + notarial + royxatdanUt + gai + jamitulovAnor;
+
+                setObshiRasxod({
+                    anor: AnorJami, kapital: KapitalJami, ipoteka: IpotekaJami, turon: TuronJami
+                })
+
+            } else if (boshFoiz >= 20 && boshFoiz < 25) {
+
+                one1Amount = +((parseInt(carValue) - carValue * 0.3) * 0.3 / 12 / (1 - (1 / Math.pow((1 + 0.3 / 12), parseInt(creditTerm))))).toFixed(3)
+                one2Amount = +(aniqCredit * 0.23 / 12 / (1 - (1 / Math.pow((1 + 0.23 / 12), parseInt(creditTerm))))).toFixed(3)
+                one3Amount = +((parseInt(carValue) - carValue * 0.3) * 0.23 / 12 / (1 - (1 / Math.pow((1 + 0.23 / 12), parseInt(creditTerm))))).toFixed(3)
+                one4Amount = +((parseInt(carValue) - carValue * 0.25) * 0.24 / 12 / (1 - (1 / Math.pow((1 + 0.24 / 12), parseInt(creditTerm))))).toFixed(3)
+                setTableB({
+                    boshFoizA: 30, boshFoizK: boshFoiz, boshFoizI: 30, boshFoizT: 25
+                })
+                setTableS({
+                    boshSummaA: carValue * 0.3,
+                    boshSummaK: boshSumma,
+                    boshSummaI: carValue * 0.3,
+                    boshSummaT: carValue * 0.25
+                })
+                let sugurtaI = parseInt(carValue) * 0.008 * (parseInt(creditTerm) / 12)
+                let sugurtaT = (parseInt(carValue) - carValue * 0.3) * 1.25 * 0.01 * (parseInt(creditTerm) / 12)
+                let rasxod = avtoBaho + notarial + royxatdanUt + gai;
+                let IpotekaJami = (sugurtaI + carValue * 0.3 + rasxod);
+                let TuronJami = (sugurtaT + boshSumma + rasxod);
+
+                let jamitulovAnor = (carValue * 30 / 100 + strahofka)
+                let AnorJami = 330000 + notarial + royxatdanUt + gai + jamitulovAnor;
+
+                setObshiRasxod({
+                    anor: AnorJami, kapital: KapitalJami, ipoteka: IpotekaJami, turon: TuronJami
+                })
+            }
+
+
+            setAllOneAmount({
+                anor: one1Amount,
+                kapital: one2Amount,
+                ipoteka: one3Amount,
+                turon: one4Amount
             })
-            setTableS({
-                boshSummaA: boshSumma, boshSummaK: boshSumma, boshSummaI: boshSumma, boshSummaT: boshSumma
-            })
-            let sugurtaI = parseInt(carValue)*0.008*(parseInt(creditTerm)/12)
-            let sugurtaT = (parseInt(carValue)-boshSumma)*1.25 * 0.01 * (parseInt(creditTerm)/12)
-            let rasxod = avtoBaho+notarial+royxatdanUt+gai
-            let IpotekaJami = (sugurtaI+boshSumma +rasxod)
-            let TuronJami = (sugurtaT + boshSumma + rasxod);
-
-            let jamitulovAnor = (carValue* boshFoiz/100 + strahofka )
-            let AnorJami = 330000 + notarial+royxatdanUt+gai + jamitulovAnor;
-
-            setObshiRasxod({
-                anor: AnorJami, kapital: KapitalJami, ipoteka: IpotekaJami, turon: TuronJami
+            setAllAllAmount({
+                anor: +(one1Amount * parseInt(creditTerm)).toFixed(3),
+                kapital: +(one2Amount * parseInt(creditTerm)).toFixed(3),
+                ipoteka: +(one3Amount * parseInt(creditTerm)).toFixed(3),
+                turon: +(one4Amount * parseInt(creditTerm)).toFixed(3)
             })
 
-        } else if (boshFoiz>=25 && boshFoiz<30){
 
-            one1Amount = +((parseInt(carValue) - carValue*0.3) * 0.3 / 12 / (1 - (1 / Math.pow((1 + 0.3 / 12), parseInt(creditTerm))))).toFixed(3)
-            one2Amount = +(aniqCredit * 0.23 / 12 / (1 - (1 / Math.pow((1 + 0.23 / 12), parseInt(creditTerm))))).toFixed(3)
-            one3Amount = +((parseInt(carValue) - carValue*0.3) * 0.23 / 12 / (1 - (1 / Math.pow((1 + 0.23 / 12), parseInt(creditTerm))))).toFixed(3)
-            one4Amount = +(aniqCredit * 0.24 / 12 / (1 - (1 / Math.pow((1 + 0.24 / 12), parseInt(creditTerm))))).toFixed(3)
-            setTableB({
-                boshFoizA: 30, boshFoizK: boshFoiz, boshFoizI: 30, boshFoizT: boshFoiz
-            })
-            setTableS({
-                boshSummaA: carValue*0.3, boshSummaK: boshSumma, boshSummaI: carValue*0.3, boshSummaT: boshSumma
-            })
-
-            let sugurtaI = parseInt(carValue)*0.008*(parseInt(creditTerm)/12)
-            let sugurtaT = (parseInt(carValue)-carValue*0.3)*1.25 * 0.01 * (parseInt(creditTerm)/12)
-            let rasxod = avtoBaho+notarial+royxatdanUt+gai;
-            let IpotekaJami = (sugurtaI+carValue*0.3 +rasxod);
-            let TuronJami = (sugurtaT + boshSumma + rasxod)
-
-
-            let jamitulovAnor = (carValue* 30/100 + strahofka )
-            let AnorJami = 330000 + notarial+royxatdanUt+gai + jamitulovAnor;
-
-            setObshiRasxod({
-                anor: AnorJami, kapital: KapitalJami, ipoteka: IpotekaJami, turon: TuronJami
-            })
-
-        } else if (boshFoiz>=20 && boshFoiz < 25){
-
-            one1Amount = +((parseInt(carValue) - carValue*0.3) * 0.3 / 12 / (1 - (1 / Math.pow((1 + 0.3 / 12), parseInt(creditTerm))))).toFixed(3)
-            one2Amount = +(aniqCredit * 0.23 / 12 / (1 - (1 / Math.pow((1 + 0.23 / 12), parseInt(creditTerm))))).toFixed(3)
-            one3Amount = +((parseInt(carValue) - carValue*0.3) * 0.23 / 12 / (1 - (1 / Math.pow((1 + 0.23 / 12), parseInt(creditTerm))))).toFixed(3)
-            one4Amount = +((parseInt(carValue) - carValue*0.25) * 0.24 / 12 / (1 - (1 / Math.pow((1 + 0.24 / 12), parseInt(creditTerm))))).toFixed(3)
-            setTableB({
-                boshFoizA: 30, boshFoizK: boshFoiz, boshFoizI: 30, boshFoizT: 25
-            })
-            setTableS({
-                boshSummaA: carValue*0.3, boshSummaK: boshSumma, boshSummaI: carValue*0.3, boshSummaT: carValue*0.25
-            })
-            let sugurtaI = parseInt(carValue)*0.008*(parseInt(creditTerm)/12)
-            let sugurtaT = (parseInt(carValue)-carValue*0.3)*1.25 * 0.01 * (parseInt(creditTerm)/12)
-            let rasxod = avtoBaho+notarial+royxatdanUt+gai;
-            let IpotekaJami = (sugurtaI+carValue*0.3 +rasxod);
-            let TuronJami = (sugurtaT + boshSumma + rasxod);
-
-            let jamitulovAnor = (carValue* 30/100 + strahofka )
-            let AnorJami = 330000 + notarial+royxatdanUt+gai + jamitulovAnor;
-
-            setObshiRasxod({
-                anor: AnorJami, kapital: KapitalJami, ipoteka: IpotekaJami, turon: TuronJami
-            })
+            if (bankLogo === 'AnorBank')
+                setTable({
+                    avtoNarx: carValue, creditTerm: creditTerm, boshFoiz: boshFoiz,
+                    boshSumma: boshSumma, oyigaNarx: oneAmount, fioz: 30, credit: allAmount
+                })
+            if (bankLogo === 'KapitalBank')
+                setTable({
+                    avtoNarx: carValue, creditTerm: creditTerm, boshFoiz: boshFoiz,
+                    boshSumma: boshSumma, oyigaNarx: oneAmount, fioz: 23, credit: allAmount
+                })
+            if (bankLogo === 'TuronBank')
+                setTable({
+                    avtoNarx: carValue, creditTerm: creditTerm, boshFoiz: boshFoiz,
+                    boshSumma: boshSumma, oyigaNarx: oneAmount, fioz: 24, credit: allAmount
+                })
+            if (bankLogo === 'IpotekaBank')
+                setTable({
+                    avtoNarx: carValue, creditTerm: creditTerm, boshFoiz: boshFoiz,
+                    boshSumma: boshSumma, oyigaNarx: oneAmount, fioz: 23, credit: allAmount
+                })
+            toast.success('Выполнено!')
+        } else{
+            toast.error("Заполните предоставленные поля!");
         }
 
-
-        setAllOneAmount({
-            anor: one1Amount,
-            kapital: one2Amount,
-            ipoteka: one3Amount,
-            turon: one4Amount
-        })
-        setAllAllAmount({
-            anor: +(one1Amount * parseInt(creditTerm)).toFixed(3),
-            kapital: +(one2Amount * parseInt(creditTerm)).toFixed(3),
-            ipoteka: +(one3Amount * parseInt(creditTerm)).toFixed(3),
-            turon: +(one4Amount * parseInt(creditTerm)).toFixed(3)
-        })
-
-
-        if (bankLogo === 'AnorBank')
-            setTable({
-                avtoNarx: carValue, creditTerm: creditTerm, boshFoiz: boshFoiz,
-                boshSumma: boshSumma, oyigaNarx: oneAmount, fioz: 30, credit: allAmount
-            })
-        if (bankLogo === 'KapitalBank')
-            setTable({
-                avtoNarx: carValue, creditTerm: creditTerm, boshFoiz: boshFoiz,
-                boshSumma: boshSumma, oyigaNarx: oneAmount, fioz: 23, credit: allAmount
-            })
-        if (bankLogo === 'TuronBank')
-            setTable({
-                avtoNarx: carValue, creditTerm: creditTerm, boshFoiz: boshFoiz,
-                boshSumma: boshSumma, oyigaNarx: oneAmount, fioz: 24, credit: allAmount
-            })
-        if (bankLogo === 'IpotekaBank')
-            setTable({
-                avtoNarx: carValue, creditTerm: creditTerm, boshFoiz: boshFoiz,
-                boshSumma: boshSumma, oyigaNarx: oneAmount, fioz: 23, credit: allAmount
-            })
     }
 
 
@@ -340,7 +349,8 @@ function App() {
 
                         </div>
 
-                        <Selected setCity={setCity} setOtKuchi={setOtKuchi} setCarYear={setCarYear} setCreditTerm={setCreditTerm} />
+                        <Selected setCity={setCity} setOtKuchi={setOtKuchi} setCarYear={setCarYear}
+                                  setCreditTerm={setCreditTerm}/>
                         <div className="calc-buttons">
                             <button type={'button'} className="btn btn-warning"
                                     onClick={Calculate}>Рассчитать
@@ -349,6 +359,7 @@ function App() {
                                 <button type={'submit'} className="btn btn-danger">Обновлять</button>
                             </form>
                         </div>
+                        <ToastContainer />
                     </div>
                     <div className="col-6">
                         <div className="card" style={{width: '95%'}}>
@@ -393,7 +404,7 @@ function App() {
                     </div>
                 </div>
                 <div>
-                    <Cost Gai={GAI} obshiRasxod={obshiRasxod} />
+                    <Cost Gai={GAI} obshiRasxod={obshiRasxod}/>
                 </div>
                 <div className="alert alert-danger mt-5" role="alert">
                     <p>*Расчет является предварительным! Точные условия по кредиту вам будут предоставлены на нашем
