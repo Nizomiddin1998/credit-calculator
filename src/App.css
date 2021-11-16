@@ -41,7 +41,9 @@ span {
 .tabs-title {
   margin-bottom: 30px;
 }
-
+a{
+  text-decoration: none!important;
+}
 .form-wrapper {
   margin: 20px 0;
 }
@@ -188,9 +190,9 @@ label {
 
 /* Accordion */
 
-.myaccordion .card,
+
 .myaccordion .card:last-child .card-header {
-  border: none;
+  border: none !important;
   box-shadow: none !important;
 }
 
@@ -206,7 +208,7 @@ label {
 .myaccordion .fa-stack {
   font-size: 18px;
 }
-.myaccordion .btn {
+.myaccordion .btn1 {
   background: #bdc5c2 !important;
   width: 100%;
   font-weight: bold;
@@ -216,7 +218,7 @@ label {
   outline: none;
 
 }
-.myaccordion .btn:focus{
+.myaccordion .btn1:focus{
   box-shadow: none !important;
 }
 
@@ -224,6 +226,32 @@ label {
   margin-top: 10px;
 }
 
-.th-width {
+.myaccordion .th-width {
   width: 300px;
+}
+/* footer button */
+.footer-top__left .btn-warning{
+  background: #efb801 linear-gradient(to top, #efb801, #fec60c);
+  text-shadow: 0 1px 3px rgb(0 0  35);
+  border: 0;
+  font-family: "Exo 2", Helvetica, Arial, sans-serif;
+  font-size: 0.875rem;
+  border-radius: 0.125rem;
+  color: #fff;
+  text-transform: uppercase;
+}
+.footer-top__left .btn {
+  display: inline-block;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  padding: 0.75rem 1.75rem;
+}
+.footer-top__left .btn:hover{
+  color: #fff;
+}
+.btn{
+  border-radius: 0!important;
 }
